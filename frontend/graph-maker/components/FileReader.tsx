@@ -3,9 +3,13 @@ import { create } from 'domain';
 import Papa from 'papaparse';
 import React, { useEffect, useState } from 'react'
 
-const acceptableCSVFileTypes = ".csv"
+interface props {
+	graphType: string | undefined
+}
 
-const FileReader = () => {
+const FileReader = ( {graphType}: props ) => {
+
+	const acceptableCSVFileTypes = ".csv"
 
 	const [columnNames, setColumnNames] = useState<string[] | undefined>([]);
 
@@ -13,6 +17,7 @@ const FileReader = () => {
 	const [columnGroupName, setColumnGroupName] = useState<string>("");
 	const [columnValueName, setColumnValueName] = useState<string>("");
 	const [title, setTitle] = useState<string>("Title");
+	const [summedData, setSummedData] = useState<string>("sum");
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 	const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
@@ -28,12 +33,13 @@ const FileReader = () => {
 		queryForm.append("groupName", columnGroupName)
 		queryForm.append("columnValue", columnValueName)
 		queryForm.append("title", title)
+		queryForm.append("summedData", summedData)
     queryForm.append("csvFile", selectedFile)
 		
 
 		try {
 				
-			const res = await fetch(`http://localhost:8000/plot`, { 
+			const res = await fetch(`http://localhost:8000/${graphType}`, { 
 				method: 'POST',
 				body: queryForm
 			});
@@ -42,14 +48,12 @@ const FileReader = () => {
 			const blob = await res.blob();
 
 			// Create a temporary object URL for the blob
-			const url = URL.createObjectURL(blob);
-				console.log("hello")	
+			const url = URL.createObjectURL(blob);	
 			// Store it in state to display it
 			setImgSrc(url);
 			
 		}
 		catch (e) {
-			console.log("hello")	
 			console.log(e)
 		} 
 
@@ -99,6 +103,14 @@ const onFileChangeHandler = (event: any) => {
 				<select name="" id="" onChange={(e) => setColumnValueName(e.target.value)}>
 					<option value="">Please select a value</option>
 					{columnNameOptions}
+				</select>	
+			</div>
+			<div>
+				<h4>How should the values be summed:</h4>
+				<select name="" id="" onChange={(e) => setSummedData(e.target.value)}>
+					<option>Please select a value</option>
+					<option value="sum">sum</option>
+					<option value="avg">avg</option>
 				</select>	
 			</div>
 			<div>
