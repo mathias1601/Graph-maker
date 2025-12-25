@@ -21,3 +21,9 @@ export const violinplot: graph = {
   name: "ViolinPlot",
   imgSrc: undefined
 } 
+
+export const piechart: graph = {
+  graphType: "pie_chart",
+  name: "PieChart",
+  imgSrc: undefined
+} 

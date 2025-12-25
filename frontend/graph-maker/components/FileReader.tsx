@@ -2,6 +2,7 @@
 import { create } from 'domain';
 import Papa from 'papaparse';
 import React, { useEffect, useState } from 'react'
+import "../styles/fileReader.css" 
 
 interface props {
 	graphType: string | undefined
@@ -10,6 +11,8 @@ interface props {
 const FileReader = ( {graphType}: props ) => {
 
 	const acceptableCSVFileTypes = ".csv"
+
+	const [fileName, setFileName] = useState<string>("Choose File (csv)");
 
 	const [columnNames, setColumnNames] = useState<string[] | undefined>([]);
 
@@ -34,7 +37,7 @@ const FileReader = ( {graphType}: props ) => {
 		queryForm.append("columnValue", columnValueName)
 		queryForm.append("title", title)
 		queryForm.append("summedData", summedData)
-    queryForm.append("csvFile", selectedFile)
+    	queryForm.append("csvFile", selectedFile)
 		
 
 		try {
@@ -66,6 +69,7 @@ console.log(columnNames);
 const onFileChangeHandler = (event: any) => {
     const file = event.target.files[0];
     setSelectedFile(file);
+	setFileName(file.name)
 
     Papa.parse(file, {
         complete: (results: any) => {
@@ -82,42 +86,51 @@ const onFileChangeHandler = (event: any) => {
 
 
   return (
-    <div>
-			<label htmlFor="csvFileSelector">
-				Choose File (csv)
-			</label>
-			<input type="file" id='csvFileSelector' accept={acceptableCSVFileTypes} onChange={onFileChangeHandler}></input>
-			<div>
-				<h4>Title (optional):</h4>
-				<input type="text" onChange={(e) => setTitle(e.target.value)} />
+    <div className='main-container'>	
+
+			<div className='csv-selector' >
+				<label htmlFor="csvFileSelector">
+					{fileName}
+				</label>
+				<input type="file" id='csvFileSelector' accept={acceptableCSVFileTypes} onChange={onFileChangeHandler} hidden></input>
 			</div>
-			<div>
-				<h4>Group names:</h4>
-				<select name="" id="" onChange={(e) => setColumnGroupName(e.target.value)}>
-					<option value="">Please select a value</option>
-					{columnNameOptions}
-				</select>	
+			
+			<div className='settings-container'>
+
+				<div>
+					<h4>Title (optional):</h4>
+					<input type="text" onChange={(e) => setTitle(e.target.value)} />
+				</div>
+				<div>
+					<h4>Group names:</h4>
+					<select name="" id="" onChange={(e) => setColumnGroupName(e.target.value)}>
+						<option value="">Please select a value</option>
+						{columnNameOptions}
+					</select>	
+				</div>
+				<div>
+					<h4>Values which are supposed to be shown:</h4>
+					<select name="" id="" onChange={(e) => setColumnValueName(e.target.value)}>
+						<option value="">Please select a value</option>
+						{columnNameOptions}
+					</select>	
+				</div>
+				<div>
+					<h4>How should the values be summed:</h4>
+					<select name="" id="" onChange={(e) => setSummedData(e.target.value)}>
+						<option>Please select a value</option>
+						<option value="sum">sum</option>
+						<option value="avg">avg</option>
+					</select>	
+				</div>
+
 			</div>
-			<div>
-				<h4>Values which are supposed to be shown:</h4>
-				<select name="" id="" onChange={(e) => setColumnValueName(e.target.value)}>
-					<option value="">Please select a value</option>
-					{columnNameOptions}
-				</select>	
-			</div>
-			<div>
-				<h4>How should the values be summed:</h4>
-				<select name="" id="" onChange={(e) => setSummedData(e.target.value)}>
-					<option>Please select a value</option>
-					<option value="sum">sum</option>
-					<option value="avg">avg</option>
-				</select>	
-			</div>
+
 			<div>
 				<button onClick={createPlot}>Create plot</button>
 			</div>
 
-			<div>
+			<div className='img-container'>
 				<img src={imgSrc} alt="" />
 			</div>
 		</div>

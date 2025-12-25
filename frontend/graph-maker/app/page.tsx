@@ -1,13 +1,14 @@
 import FileReader from "@/components/FileReader";
 import Graphbutton from "@/components/Graphbutton";
-import { bargraph, boxplot, graph, violinplot } from "@/types/graphtypes";
+import { bargraph, boxplot, graph, piechart, violinplot } from "@/types/graphtypes";
 
 export default function Home() {
 
   const graphTypes: graph[] = [
     bargraph,
     boxplot,
-    violinplot
+    violinplot,
+    piechart
   ]
 
   const displayGraphButtons = graphTypes.map((graphType, index) => (
